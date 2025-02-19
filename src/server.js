@@ -7,9 +7,23 @@ let products = productsRaw
 const app = express();
 app.use(express.json());
 
-// app.get('/hello', (req, res) => {    
-//     res.send('Helllo!');
-// });
+const connectDB = require("./db");
+app.use(express.json());
+
+app.get("/", async (req, res) => {
+  try {
+    const db = await connectDB();
+    const collection = db.collection("myCollection");
+    
+    const data = await collection.find().toArray();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: "Database connection failed" });
+  }
+});
+
+app.listen(3000, () => console.log("Server running on port 3000"));
+
 
 app.get('/products', (req, res) => {
 res.json(products);
